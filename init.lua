@@ -46,9 +46,9 @@ cmp.setup({
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lspconfig.jedi_language_server.setup {
-	capabilities = capabilities
-}
+-- lspconfig.jedi_language_server.setup {
+-- 	capabilities = capabilities
+-- }
 -- lspconfig.eslint.setup({ capabilities = capabilities })
 lspconfig.csharp_ls.setup({ capabilities = capabilities })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
@@ -61,8 +61,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 	end
 })
-
-require('gitsigns').setup()
 
 
 -- Options

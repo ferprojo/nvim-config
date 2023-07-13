@@ -31,9 +31,5 @@ return require('packer').startup(function(use)
 		tag = "v1.*",
 		run = "make install_jsregexp"
 	} )
-
-	-- Git
-	use 'lewis6991/gitsigns.nvim'
-
 end)
 
