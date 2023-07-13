@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 require('gitsigns').setup()
-
+require("diffview").setup()
 
 -- Options
 vim.opt.syntax = 'enable'
