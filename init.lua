@@ -62,6 +62,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end
 })
 
+require('gitsigns').setup()
+
 
 -- Options
 vim.opt.syntax = 'enable'
