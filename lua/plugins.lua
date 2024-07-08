@@ -19,8 +19,9 @@ return require('packer').startup(function(use)
 		run = ":MasonUpdate"
 	}
 	
-	use 'neovim/nvim-lspconfig'
+	use "Hoffs/omnisharp-extended-lsp.nvim"
 	use 'williamboman/mason-lspconfig.nvim'
+	use 'neovim/nvim-lspconfig'
 
 	-- Autocomplete and snippets
 	use 'hrsh7th/cmp-nvim-lsp'
@@ -35,6 +36,10 @@ return require('packer').startup(function(use)
 	-- Git
 	use 'lewis6991/gitsigns.nvim'
 	use 'sindrets/diffview.nvim'
+
+
+	use "lukas-reineke/indent-blankline.nvim"
+	use "sho-87/kanagawa-paper"
 
 end)
 

@@ -12,10 +12,62 @@ vim.opt.termguicolors = true
 -- Call moved to remaps.lua in order to set mappings there
 -- require("nvim-tree").setup()
 
-vim.cmd("colorscheme tokyonight-night")
+vim.cmd("colorscheme kanagawa-paper")
 
 -- Setup mason
 require("mason").setup()
+require("mason-lspconfig").setup({
+	ensure_installed = {
+		"omnisharp"
+	}
+})
+require("mason-lspconfig").setup_handlers({
+	function(server_name)
+		require("lspconfig")[server_name].setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			handlers = rounded_border_handlers
+		})
+	end,
+	["omnisharp"] = function()
+		require("lspconfig")["omnisharp"].setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			-- root_dir = function(fname)
+			-- 	local primary = require("lspconfig").util.root_patterns("*.sln")(fname)
+			-- 	local fallback = require("lspconfig").util.root_patterns("*.csproj")(fname)
+			-- 	return primary or fallback
+			-- end,
+			-- handlers = vim.tbl_extend("force", rounded_border_handlers, {
+			-- 	["textDocument/definition"] = require("omnisharp_extended").handler,
+			-- }),
+		})
+	end
+})
+-- require("mason-lspconfig").setup_handlers({
+-- 	function[server_name]
+-- 		require("lsp-config").setup({
+-- 			on_attach = on_attach,
+-- 			capabilities = capabilities,
+-- 			handlers = rounded_border_handlers
+-- 		})
+-- 	end,
+-- 	["omnisharp"] = function()
+-- 		require("lsp-config")["omnisharp"].setup({
+-- 			on_attach = on_attach,
+-- 			capabilities = capabilities,
+-- 			root_dir = function(fname)
+-- 				local primary = require("lsp-config").util.root_patterns("*.sln")(fname)
+-- 				local fallback = require("lsp-config").util.root_patterns("*.csproj")(fname)
+-- 				return primary or fallback
+-- 			end,
+-- 			handlers = vim.tbl_extend("force", rounded_border_handlers, {
+-- 				["textDocument/definition"] = require("omnisharp_extended").handler,
+-- 			}),
+-- 		})
+-- 	end
+-- })
+
 
 -- MasonInstall csharp-language-server
 -- MasonInstall eslint_lsp
@@ -42,6 +94,9 @@ cmp.setup({
 		{ name = 'buffer' }
 	})
 })
+
+
+
 -- setup lspconfig
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -50,9 +105,51 @@ lspconfig.jedi_language_server.setup {
 	capabilities = capabilities
 }
 -- lspconfig.eslint.setup({ capabilities = capabilities })
-lspconfig.csharp_ls.setup({ capabilities = capabilities })
+-- lspconfig.csharp_ls.setup({ capabilities = capabilities })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
 lspconfig.tsserver.setup({ capabilities = capabilities })
+-- require'lspconfig'.omnisharp.setup {
+--     cmd = { "dotnet", "~/.local/share/nvim/mason/bin/omnisharp" },
+-- 
+--     settings = {
+--       FormattingOptions = {
+--         -- Enables support for reading code style, naming convention and analyzer
+--         -- settings from .editorconfig.
+--         EnableEditorConfigSupport = true,
+--         -- Specifies whether 'using' directives should be grouped and sorted during
+--         -- document formatting.
+--         OrganizeImports = nil,
+--       },
+--       MsBuild = {
+--         -- If true, MSBuild project system will only load projects for files that
+--         -- were opened in the editor. This setting is useful for big C# codebases
+--         -- and allows for faster initialization of code navigation features only
+--         -- for projects that are relevant to code that is being edited. With this
+--         -- setting enabled OmniSharp may load fewer projects and may thus display
+--         -- incomplete reference lists for symbols.
+--         LoadProjectsOnDemand = nil,
+--       },
+--       RoslynExtensionsOptions = {
+--         -- Enables support for roslyn analyzers, code fixes and rulesets.
+--         EnableAnalyzersSupport = nil,
+--         -- Enables support for showing unimported types and unimported extension
+--         -- methods in completion lists. When committed, the appropriate using
+--         -- directive will be added at the top of the current file. This option can
+--         -- have a negative impact on initial completion responsiveness,
+--         -- particularly for the first few completion sessions after opening a
+--         -- solution.
+--         EnableImportCompletion = nil,
+--         -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+--         -- true
+--         AnalyzeOpenDocumentsOnly = nil,
+--       },
+--       Sdk = {
+--         -- Specifies whether to include preview versions of the .NET SDK when
+--         -- determining which version to use for project loading.
+--         IncludePrereleases = true,
+--       },
+--     },
+-- }
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -64,7 +161,35 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 require('gitsigns').setup()
 require("diffview").setup()
+require('telescope').setup{ 
+  defaults = { 
+    file_ignore_patterns = { 
+      "node_modules" 
+    }
+  }
+}
 
+require("ibl").setup()
+
+require'nvim-treesitter.configs'.setup {
+
+  -- A list of parser names, or "all" (the listed parsers MUST always be installed)
+  ensure_installed = { "c_sharp", "javascript", "angular", "typescript" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
+vim.cmd("set fdm=expr")
+vim.cmd("set foldexpr=nvim_treesitter#foldexpr()")
 -- Options
 vim.opt.syntax = 'enable'
 vim.opt.number = true
