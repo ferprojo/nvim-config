@@ -40,6 +40,17 @@ return require('packer').startup(function(use)
 
 	use "lukas-reineke/indent-blankline.nvim"
 	use "sho-87/kanagawa-paper"
+	use {
+	  "puremourning/vimspector",
+	  cmd = { "VimspectorInstall", "VimspectorUpdate" },
+	  fn = { "vimspector#Launch()", "vimspector#ToggleBreakpoint", "vimspector#Continue" },
+	  config = function()
+	    require("config.vimspector").setup()
+	  end,
+	}
+
+	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} }
+	use "mfussenegger/nvim-dap"
 
 end)
 

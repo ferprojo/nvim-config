@@ -26,24 +26,25 @@ require("mason-lspconfig").setup_handlers({
 		require("lspconfig")[server_name].setup({
 			on_attach = on_attach,
 			capabilities = capabilities,
-			handlers = rounded_border_handlers
+			handlers = rounded_border_handlers,
 		})
 	end,
 	["omnisharp"] = function()
 		require("lspconfig")["omnisharp"].setup({
-			on_attach = on_attach,
-			capabilities = capabilities,
-			-- root_dir = function(fname)
-			-- 	local primary = require("lspconfig").util.root_patterns("*.sln")(fname)
-			-- 	local fallback = require("lspconfig").util.root_patterns("*.csproj")(fname)
-			-- 	return primary or fallback
-			-- end,
+		on_attach = on_attach,
+		capabilities = capabilities,
+		cmd = { "dotnet", "omnisharp.exe" }
+
 			-- handlers = vim.tbl_extend("force", rounded_border_handlers, {
 			-- 	["textDocument/definition"] = require("omnisharp_extended").handler,
 			-- }),
 		})
 	end
 })
+
+require'lspconfig'.csharp_ls.setup{}
+-- require'lspconfig'.angularls.setup{}
+
 -- require("mason-lspconfig").setup_handlers({
 -- 	function[server_name]
 -- 		require("lsp-config").setup({
@@ -107,7 +108,8 @@ lspconfig.jedi_language_server.setup {
 -- lspconfig.eslint.setup({ capabilities = capabilities })
 -- lspconfig.csharp_ls.setup({ capabilities = capabilities })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
-lspconfig.tsserver.setup({ capabilities = capabilities })
+lspconfig.tsserver.setup({ capabilities = capabilities,
+							cmd = {"typescript-language-server.cmd", "--stdio"}})
 -- require'lspconfig'.omnisharp.setup {
 --     cmd = { "dotnet", "~/.local/share/nvim/mason/bin/omnisharp" },
 -- 
@@ -170,6 +172,33 @@ require('telescope').setup{
 }
 
 require("ibl").setup()
+
+local dap, dapui = require("dap"), require("dapui")
+
+dap.adapters.coreclr = {
+  type = 'executable',
+  command = 'netcoredbg',
+  args = { '--interpreter=vscode' },
+}
+
+dap.configurations.cs = {
+  {
+    type = "coreclr",
+    name = "launch - netcoredbg",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+    end,
+  },
+  {
+    type = "coreclr",
+    name = "attach - netcoredbg",
+    request = "attach",
+    processId = require('dap.utils').pick_process,
+  },
+}
+
+dapui.setup()
 
 require'nvim-treesitter.configs'.setup {
 
